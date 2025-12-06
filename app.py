@@ -3,6 +3,7 @@ from rembg import remove
 from PIL import Image
 import io
 import numpy as np
+import os
 
 from streamlit_cropper import st_cropper
 
@@ -76,10 +77,18 @@ if img_file_buffer is not None:
             final_image.save(buf, format="PNG")
             byte_im = buf.getvalue()
 
+            # Determine filename
+            original_filename = "camera_capture.png"
+            if hasattr(img_file_buffer, "name"):
+                 original_filename = img_file_buffer.name
+
+            file_name_root, _ = os.path.splitext(original_filename)
+            new_filename = f"{file_name_root}_nobg.png"
+
             st.download_button(
                 label="Download Image",
                 data=byte_im,
-                file_name="imagename_nobg.png",
+                file_name=new_filename,
                 mime="image/png"
             )
 
